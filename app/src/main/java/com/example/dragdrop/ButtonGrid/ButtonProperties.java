@@ -1,5 +1,7 @@
 package com.example.dragdrop.ButtonGrid;
 
+import android.view.View;
+
 /**
  * @author noahajamesy
  *
@@ -28,8 +30,10 @@ public class ButtonProperties {
     public String image;
     public int width_ratio;
     public int height_ratio;
+    public View.OnClickListener clickListener;
 
-    public ButtonProperties(String code, int position, String label, String color, String image, int width_ratio, int height_ratio) {
+
+    public ButtonProperties(String code, int position, String label, String color, String image, int width_ratio, int height_ratio,View.OnClickListener clickListener) {
         this.code = code;
         this.position = position;
         this.label = label;
@@ -37,5 +41,6 @@ public class ButtonProperties {
         this.image = image;
         this.width_ratio = width_ratio;
         this.height_ratio = height_ratio;
+        this.clickListener = clickListener;
     }
 }

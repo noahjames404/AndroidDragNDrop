@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Build;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.RelativeLayout;
 
 import com.example.dragdrop.ButtonGrid.ButtonGrid;
@@ -13,7 +14,7 @@ import com.example.dragdrop.ButtonGrid.ButtonProperties;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     RelativeLayout rl_layout;
     @Override
@@ -29,6 +30,11 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    public void onClick(View view) {
+
+    }
+
     private void doButtonGrid() {
         rl_layout = findViewById(R.id.rl_sample);
         List<ButtonProperties> properties = new ArrayList<>();
@@ -40,7 +46,8 @@ public class MainActivity extends AppCompatActivity {
                         "#3498db",
                         "",
                         2,
-                        2
+                        2,
+                        this
                 )
         );
 
@@ -51,8 +58,9 @@ public class MainActivity extends AppCompatActivity {
                         "power 2",
                         "#00FFFF",
                         "",
+                        2,
                         1,
-                        1
+                        this
                 )
         );
         properties.add(
@@ -63,7 +71,35 @@ public class MainActivity extends AppCompatActivity {
                         "#991111",
                         "",
                         1,
-                        1
+                        1,
+                        this
+                )
+        );
+
+
+        properties.add(
+                new ButtonProperties(
+                        "",
+                        0,
+                        "power 3",
+                        "#991111",
+                        "",
+                        1,
+                        1,
+                        this
+                )
+        );
+
+        properties.add(
+                new ButtonProperties(
+                        "",
+                        0,
+                        "power 3",
+                        "#991111",
+                        "",
+                        1,
+                        3,
+                        this
                 )
         );
 
@@ -75,7 +111,8 @@ public class MainActivity extends AppCompatActivity {
                         "#779944",
                         "",
                         1,
-                        1
+                        1,
+                        this
                 )
         );
 
@@ -87,7 +124,8 @@ public class MainActivity extends AppCompatActivity {
                         "#3498db",
                         "",
                         1,
-                        1
+                        1,
+                        this
                 )
         );
 
@@ -100,10 +138,13 @@ public class MainActivity extends AppCompatActivity {
                         "#3498db",
                         "",
                         1,
-                        1
+                        1,
+                        this
                 )
         );
 
         final ButtonGrid buttonGrid = new ButtonGrid(3,4,properties,rl_layout,getApplicationContext());
     }
-    }
+
+
+}

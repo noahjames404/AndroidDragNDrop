@@ -44,6 +44,7 @@ public class ButtonGrid {
     private int[] recent_swaped_items;
     private float button_label_scale = 20;
     private double default_height;
+    private boolean edit_mode = false;
 
     private float scale;
     public ButtonGrid(final int row_count, final int col_count, final List<ButtonProperties> buttonProperties, RelativeLayout layout, final Context context) {
@@ -81,6 +82,9 @@ public class ButtonGrid {
 
     }
 
+    public void setEditMode(boolean edit){
+        edit_mode = edit;
+    }
 
 
 
@@ -183,6 +187,25 @@ public class ButtonGrid {
                 ViewGroup.LayoutParams layoutParams = layout.getLayoutParams();
                 layoutParams.height = (int)compute_height;
             }
+            do{
+                double []ai = new double[]{x_margin, y_margin,x_margin + x_quotient * btn.width_ratio,y_margin + y_quotient * btn.height_ratio};
+                result = isOccupied(ai);
+                if(result != 0){
+                    x_margin += result;
+                    if(x_margin >= width){
+                        y_margin += y_quotient;
+                        x_margin = 0;
+                    }
+                    Log.d(TAG, "generateGrid: isOccupied " + result);
+                }else{
+                    Log.d(TAG, "generateGrid: isOccupied " + result);
+                    printCheck();
+                    Log.d(TAG, "printCheck: ------");
+                    Log.d(TAG, "printCheck: " + ai[0] +"\t" + ai[1] + "\t" +ai[2] +"\t" + ai[3]);
+                    Log.d(TAG, "printCheck: ------");
+                    break;
+                }
+            }while (true);
             Log.d(TAG, "generateGrid: width " + width);
             layout.addView(generateButton(x_margin,y_margin,btn));
             if(!has_drop){
@@ -230,6 +253,8 @@ public class ButtonGrid {
         params.setMargins((int)x_margin,(int)y_margin,0,0);
 
         btn.setLayoutParams(params);
+
+        btn.setOnClickListener(properties.clickListener);
 
 
         btn.setOnDragListener(new View.OnDragListener() {
@@ -282,7 +307,9 @@ public class ButtonGrid {
 
             @Override
             public boolean onTouch(View v, MotionEvent me) {
-
+                if(!edit_mode){
+                    return false;
+                }
 
                 int x = (int)me.getRawX();
                 int y = (int)me.getRawY();
