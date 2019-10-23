@@ -7,18 +7,48 @@
     tools:context=".MainActivity"
     android:orientation="vertical">
 
-    <ScrollView
-        android:fillViewport="true"
+    <LinearLayout
+        android:background="#eee"
+        android:id="@+id/rl_pager_sample"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="horizontal">
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:text="P\nR\nE\nV"
+            android:textSize="40dp"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:layout_height="match_parent" />
+        
         <RelativeLayout
             android:id="@+id/rl_sample"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1">
+            android:layout_width="0dp"
+            android:layout_weight="10"
+            android:layout_height="match_parent"></RelativeLayout>
 
-        </RelativeLayout>
-    </ScrollView>
+        <Button
+            android:textSize="40dp"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="N\nE\nX\nT"
+            android:layout_weight="1"
+
+            android:layout_width="0dp"
+            android:layout_height="match_parent" />
+
+    </LinearLayout>
+
+
+
+
+
+
+
+
 
 
 </LinearLayout>

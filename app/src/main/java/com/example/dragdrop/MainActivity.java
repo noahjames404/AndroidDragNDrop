@@ -144,6 +144,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         );
 
         final ButtonGrid buttonGrid = new ButtonGrid(3,4,properties,rl_layout,getApplicationContext());
+        buttonGrid.setEditMode(true);
     }
 
 

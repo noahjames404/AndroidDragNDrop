@@ -206,6 +206,7 @@ public class ButtonGrid {
                     break;
                 }
             }while (true);
+
             Log.d(TAG, "generateGrid: width " + width);
             layout.addView(generateButton(x_margin,y_margin,btn));
             if(!has_drop){
@@ -215,6 +216,30 @@ public class ButtonGrid {
             Log.d(TAG, "generateGrid:"+ btn.label + " w & h pixels " + width + " " + height);
 
         }
+    }
+
+    public double validateLocation(double x_margin, double y_margin, ButtonProperties btn ){
+        double result;
+        do{
+            double []ai = new double[]{x_margin, y_margin,x_margin + x_quotient * btn.width_ratio,y_margin + y_quotient * btn.height_ratio};
+            result = isOccupied(ai);
+            if(result != 0){
+                x_margin += result;
+                if(x_margin >= width){
+                    y_margin += y_quotient;
+                    x_margin = 0;
+                }
+                Log.d(TAG, "generateGrid: isOccupied " + result);
+            }else{
+                Log.d(TAG, "generateGrid: isOccupied " + result);
+                printCheck();
+                Log.d(TAG, "printCheck: ------");
+                Log.d(TAG, "printCheck: " + ai[0] +"\t" + ai[1] + "\t" +ai[2] +"\t" + ai[3]);
+                Log.d(TAG, "printCheck: ------");
+                break;
+            }
+        }while (true);
+        return result;
     }
 
 
