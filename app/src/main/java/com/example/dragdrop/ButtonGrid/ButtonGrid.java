@@ -139,7 +139,8 @@ public class ButtonGrid {
              *
              * update: I've tested using the "==" it doesn't always work
              * */
-            if(coordinates.x_margin  >= width ){
+            coordinates.btn = buttonProperties.get(i);
+            if(coordinates.x_margin + x_quotient * coordinates.btn.width_ratio >= width ){
                 coordinates.y_margin  += y_quotient;
                 coordinates.x_margin  = 0;
             }
@@ -148,7 +149,7 @@ public class ButtonGrid {
             /**
              * generate button here
              * */
-            coordinates.btn = buttonProperties.get(i);
+
             double result = 0;
             if(i > 0){
                 validateLocation(coordinates);
@@ -196,7 +197,7 @@ public class ButtonGrid {
             result = isOccupied(ai);
             if(result != 0){
                 coordinates.x_margin  += result;
-                if(coordinates.x_margin  >= width){
+                if(coordinates.x_margin + x_quotient * coordinates.btn.width_ratio  >= width){
                     coordinates.y_margin  += y_quotient;
                     coordinates.x_margin  = 0;
                 }
