@@ -126,11 +126,10 @@ public class ButtonGrid {
     }
 
     public void generateGrid(){
-        GridButtonCoordinates coordinates = new GridButtonCoordinates();
-        Log.d(TAG, "generateGrid: button count " + buttonProperties.size());
-        coordinates.x_margin = 0;
-        coordinates.y_margin = 0;
+        double x_margin = 0,y_margin = 0,
+                x_counter =0, y_counter =0;
 
+        Log.d(TAG, "generateGrid: button count " + buttonProperties.size());
         for(int i =0; i < buttonProperties.size(); i++){
             /**
              * it could be "==" but the x_axis may
@@ -139,67 +138,96 @@ public class ButtonGrid {
              *
              * update: I've tested using the "==" it doesn't always work
              * */
-            coordinates.btn = buttonProperties.get(i);
-            if(coordinates.x_margin + x_quotient * coordinates.btn.width_ratio >= width ){
-                coordinates.y_margin  += y_quotient;
-                coordinates.x_margin  = 0;
+            if(x_margin >= width ){
+                y_margin += y_quotient;
+                x_margin = 0;
             }
 
 
             /**
              * generate button here
              * */
-
+            ButtonProperties btn = buttonProperties.get(i);
             double result = 0;
             if(i > 0){
-                validateLocation(coordinates);
+                do{
+                    double []ai = new double[]{x_margin, y_margin,x_margin + x_quotient * btn.width_ratio,y_margin + y_quotient * btn.height_ratio};
+                    result = isOccupied(ai);
+                    if(result != 0){
+                        x_margin += result;
+                        if(x_margin >= width){
+                            y_margin += y_quotient;
+                            x_margin = 0;
+                        }
+                        Log.d(TAG, "generateGrid: isOccupied " + result);
+                    }else{
+                        Log.d(TAG, "generateGrid: isOccupied " + result);
+                        printCheck();
+                        Log.d(TAG, "printCheck: ------");
+                        Log.d(TAG, "printCheck: " + ai[0] +"\t" + ai[1] + "\t" +ai[2] +"\t" + ai[3]);
+                        Log.d(TAG, "printCheck: ------");
+                        break;
+                    }
+                }while (true);
             }
 
 
 
 
             boolean has_drop = false;
-            coordinates.x_margin  += result;
-            if(coordinates.x_margin  + coordinates.btn.width_ratio * x_quotient > width){
-                coordinates.y_margin  += y_quotient;
-                coordinates.x_margin  = 0;
+            x_margin += result;
+            if(x_margin + btn.width_ratio * x_quotient > width){
+                y_margin += y_quotient;
+                x_margin = 0;
                 has_drop = true;
             }
-            double compute_height = coordinates.y_margin  + coordinates.btn.height_ratio * y_quotient;
+            double compute_height = y_margin + btn.height_ratio * y_quotient;
             if(compute_height > height){
                 Log.d(TAG, "generateGrid: reached the limit");
                 ViewGroup.LayoutParams layoutParams = layout.getLayoutParams();
                 layoutParams.height = (int)compute_height;
             }
-            validateLocation(coordinates);
+            do{
+                double []ai = new double[]{x_margin, y_margin,x_margin + x_quotient * btn.width_ratio,y_margin + y_quotient * btn.height_ratio};
+                result = isOccupied(ai);
+                if(result != 0){
+                    x_margin += result;
+                    if(x_margin + x_quotient * btn.width_ratio >= width){
+                        y_margin += y_quotient;
+                        x_margin = 0;
+                    }
+                    Log.d(TAG, "generateGrid: isOccupied " + result);
+                }else{
+                    Log.d(TAG, "generateGrid: isOccupied " + result);
+                    printCheck();
+                    Log.d(TAG, "printCheck: ------");
+                    Log.d(TAG, "printCheck: " + ai[0] +"\t" + ai[1] + "\t" +ai[2] +"\t" + ai[3]);
+                    Log.d(TAG, "printCheck: ------");
+                    break;
+                }
+            }while (true);
 
             Log.d(TAG, "generateGrid: width " + width);
-            layout.addView(generateButton(coordinates.x_margin ,coordinates.y_margin ,coordinates.btn));
+            layout.addView(generateButton(x_margin,y_margin,btn));
             if(!has_drop){
-                coordinates.x_margin += coordinates.btn.width_ratio *  x_quotient;
+                x_margin+= btn.width_ratio *  x_quotient;
             }
-            Log.d(TAG, "generateGrid: "+ coordinates.btn.label + " x & y margins " + coordinates.x_margin  + " " + coordinates.y_margin );
-            Log.d(TAG, "generateGrid:"+ coordinates.btn.label + " w & h pixels " + width + " " + height);
+            Log.d(TAG, "generateGrid: "+ btn.label + " x & y margins " + x_margin + " " + y_margin);
+            Log.d(TAG, "generateGrid:"+ btn.label + " w & h pixels " + width + " " + height);
 
         }
     }
 
-    public class GridButtonCoordinates {
-        double x_margin;
-        double y_margin;
-        ButtonProperties btn;
-    }
-
-    public void validateLocation(GridButtonCoordinates coordinates){
+    public double validateLocation(double x_margin, double y_margin, ButtonProperties btn ){
         double result;
         do{
-            double []ai = new double[]{coordinates.x_margin , coordinates.y_margin ,coordinates.x_margin  + x_quotient * coordinates.btn.width_ratio,coordinates.y_margin  + y_quotient * coordinates.btn.height_ratio};
+            double []ai = new double[]{x_margin, y_margin,x_margin + x_quotient * btn.width_ratio,y_margin + y_quotient * btn.height_ratio};
             result = isOccupied(ai);
             if(result != 0){
-                coordinates.x_margin  += result;
-                if(coordinates.x_margin + x_quotient * coordinates.btn.width_ratio  >= width){
-                    coordinates.y_margin  += y_quotient;
-                    coordinates.x_margin  = 0;
+                x_margin += result;
+                if(x_margin + x_quotient * btn.width_ratio >= width){
+                    y_margin += y_quotient;
+                    x_margin = 0;
                 }
                 Log.d(TAG, "generateGrid: isOccupied " + result);
             }else{
@@ -211,6 +239,7 @@ public class ButtonGrid {
                 break;
             }
         }while (true);
+        return result;
     }
 
 
@@ -328,9 +357,28 @@ public class ButtonGrid {
                 if (me.getAction() == MotionEvent.ACTION_MOVE  ){
                     v.getBackground().setAlpha(150);
                     v.startDrag(data,shadowBuilder,null,0);
+//                    RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams((int)width, (int)height);
+//                    //set the margins. Not sure why but multiplying the height by 1.5 seems to keep my finger centered on the button while it's moving
+//                    params.setMargins(x - v.getWidth()/2, (int)(y - v.getHeight()*1.5),0,0);
+//                    v.setLayoutParams(params);
                 }
                 if(me.getAction() == MotionEvent.ACTION_UP){
-                    //not implemented yet
+
+                    if(isViewInBounds(btn,x , y)){
+//                        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
+//                                (int)width,
+//                                (int) height
+//                        );
+//
+//                        params.setMargins((int)x_margin,(int)y_margin,0,0);
+//                        v.setLayoutParams(params);
+
+
+                    }
+                    else if(isViewInBounds(v, x, y)){
+                        Log.d(TAG, "onTouch ViewA");
+                        //Here goes code to execute on onTouch ViewA
+                    }
 
                 }
 
@@ -381,12 +429,12 @@ public class ButtonGrid {
 
             boolean arg2 =
                     d[0] < data[2]
-                    &&
-                    d[2] > data[0]
-                    &&
-                    d[1] < data[3]
-                    &&
-                    d[3] > data[1];
+                            &&
+                            d[2] > data[0]
+                            &&
+                            d[1] < data[3]
+                            &&
+                            d[3] > data[1];
 
             if(
                     arg2

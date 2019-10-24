@@ -23,7 +23,7 @@
             android:layout_gravity="center"
             android:gravity="center"
             android:layout_height="match_parent" />
-        
+
         <RelativeLayout
             android:id="@+id/rl_sample"
             android:layout_width="0dp"
